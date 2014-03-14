@@ -67,4 +67,5 @@ bash 'unzip fuelphp' do
 end
 link "/usr/share/pear/#{fuel}" do
 	to "/usr/share/pear/#{fuel_name}"
+	not_if { File.exists? "/usr/share/pear/#{fuel}" }
 end

@@ -9,8 +9,8 @@
 
 ethna_name = 'ethna'
 ethna_ver = '2.6.0beta3'
-ethna_pkg = ethna_name + '-' + ethna_ver + '.tar.gz'
 ethna_unzip = ethna_name + '-' + ethna_ver
+ethna_pkg = ethna_unzip + '.tar.gz'
 ethna_src_url = 'https://github.com/ethna/ethna/archive/' + ethna_ver + '.tar.gz'
 
 package 'wget' do
@@ -30,4 +30,10 @@ bash 'install pear ethna' do
 	EOS
 	not_if { File.exists? "/usr/share/pear/#{ethna_unzip}" }
 end
+
+link "/usr/share/pear/#{ethna_name}" do
+	to "/usr/share/pear/#{ethna_unzip}"
+	not_if { File.exists? "/usr/share/pear/#{ethna_name}" }
+end
+
 
