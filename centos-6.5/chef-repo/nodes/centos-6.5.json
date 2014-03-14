@@ -1,0 +1,16 @@
+{
+ "package": {
+ 	// "php-base": "php54",
+ 	"php-base": "php",
+ 	"options": "--enablerepo=remi"
+ 	// "options": ""
+ },
+ "run_list":[
+		"aws-local",
+		"centos-6.5-add-repo",
+		"apache",
+		"mysql",
+		"php-set",
+		"pear-ethna"
+	]
+}
