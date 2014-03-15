@@ -51,6 +51,10 @@ service 'httpd' do
 	action :restart
 end
 
+package 'unzip' do
+	action :install
+end
+
 cookbook_file "/usr/local/src/#{fuel_file}" do
 	source fuel_file
 	owner 'vagrant'
@@ -59,13 +63,13 @@ cookbook_file "/usr/local/src/#{fuel_file}" do
 	not_if { File.exists? "/usr/local/src/#{fuel_file}" }
 end
 bash 'unzip fuelphp' do
-	cwd '/usr/share/pear'
+	cwd '/var/www'
 	code <<-EOS
 		unzip /usr/local/src/#{fuel_file}
 	EOS
-	not_if { File.exists? "/usr/share/pear/#{fuel_name}" }
+	not_if { File.exists? "/var/www/#{fuel_name}" }
 end
-link "/usr/share/pear/#{fuel}" do
-	to "/usr/share/pear/#{fuel_name}"
-	not_if { File.exists? "/usr/share/pear/#{fuel}" }
+link "/var/www/#{fuel}" do
+	to "/var/www/#{fuel_name}"
+	not_if { File.exists? "/var/www/#{fuel}" }
 end

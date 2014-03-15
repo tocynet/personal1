@@ -14,6 +14,9 @@ if node.has_key?('package')
 	end
 end
 
+package 'mysql-libs' do
+	action :remove
+end
 %w{mysql mysql-server}.each do |pkg|
 	package "#{pkg}" do
 		action :install

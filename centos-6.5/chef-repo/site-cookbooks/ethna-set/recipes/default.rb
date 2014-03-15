@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: pear-ethna
+# Cookbook Name:: ethna-set
 # Recipe:: default
 #
 # Copyright 2014, YOUR_COMPANY_NAME
@@ -7,6 +7,7 @@
 # All rights reserved - Do Not Redistribute
 #
 
+ethna_dir  = 'Ethna'
 ethna_name = 'ethna'
 ethna_ver = '2.6.0beta3'
 ethna_unzip = ethna_name + '-' + ethna_ver
@@ -31,9 +32,16 @@ bash 'install pear ethna' do
 	not_if { File.exists? "/usr/share/pear/#{ethna_unzip}" }
 end
 
-link "/usr/share/pear/#{ethna_name}" do
+link "/usr/share/pear/#{ethna_dir}" do
 	to "/usr/share/pear/#{ethna_unzip}"
-	not_if { File.exists? "/usr/share/pear/#{ethna_name}" }
+	not_if { File.exists? "/usr/share/pear/#{ethna_dir}" }
 end
 
+cookbook_file '/etc/profile.d/ethna.sh' do
+	source 'ethna.sh'
+	# owner 'vagrant'
+	# group 'vagrant'
+	mode  '0755'
+	not_if { File.exists? '/etc/profile.d/ethna.sh' }
+end
 

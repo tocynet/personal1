@@ -15,3 +15,10 @@ service 'httpd' do
 	action [:enable, :start]
 end
 
+bash 'chown vagrant' do
+	cwd '/var'
+	code <<-EOS
+		chown -R vagrant:vagrant www
+	EOS
+end
+

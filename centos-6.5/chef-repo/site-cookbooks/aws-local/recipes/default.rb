@@ -35,6 +35,20 @@ cookbook_file "/usr/local/src/#{sdk}" do
 	mode  '0644'
 	not_if { File.exists? "/usr/local/src/#{sdk}" }
 end
+cookbook_file "/var/www/#{sdk}" do
+	source sdk
+	owner 'vagrant'
+	group 'vagrant'
+	mode  '0644'
+	not_if { File.exists? "/var/www/#{sdk}" }
+end
+cookbook_file "/var/www/aws-key.csv" do
+	source 'aws-key.csv'
+	owner 'vagrant'
+	group 'vagrant'
+	mode  '0644'
+	not_if { File.exists? "/var/www/aws-key.csv" }
+end
 bash 'unzip dynamodb_local' do
 	cwd '/opt'
 	code <<-EOS

@@ -6,11 +6,12 @@
  	// "options": ""
  },
  "run_list":[
-		"aws-local",
-		"centos-6.5-add-repo",
-		"apache",
-		"mysql",
-		"php-set",
-		"pear-ethna"
-	]
+	"base-set",
+	"aws-local",
+	"centos-6.5-add-repo",
+	"apache",
+	"mysql",
+	"php-set",
+	"ethna-set"
+ ]
 }
