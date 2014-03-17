@@ -16,6 +16,7 @@ end
 
 package 'mysql-libs' do
 	action :remove
+	not_if "rpm -qa | grep mysql-libs-5.5"
 end
 %w{mysql mysql-server}.each do |pkg|
 	package "#{pkg}" do

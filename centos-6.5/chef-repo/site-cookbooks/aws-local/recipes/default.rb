@@ -59,6 +59,14 @@ end
 link "/opt/#{dynamodb}" do
 	to "/opt/#{dynamodb_name}"
 end
+cookbook_file "/etc/init.d/dynamodb_local" do
+	source 'dynamodb_local'
+	#owner 'vagrant'
+	#group 'vagrant'
+	mode  '0755'
+	not_if { File.exists? "/etc/init.d/dynamodb_local" }
+end
+
 
 package "java-#{java_ver}-openjdk" do
 	action :install
@@ -71,4 +79,18 @@ cookbook_file "/var/www/aws.test.php" do
 	mode  '0644'
 	not_if { File.exists? "/var/www/aws.test.php" }
 end
+
+service 'dynamodb_local' do
+	# action [:enable, :start]
+	supports :status => true, :restart => true
+	action [:enable, :restart]
+end
+
+#bash 'start dynamodb_local' do
+#	cwd '/opt'
+#	code <<-EOS
+#		/etc/init.d/dynamodb_local restart
+#	EOS
+#	not_if { File.exists? "/var/run/#{dynamodb_name}/#{dynamodb_name}" }
+#end
 

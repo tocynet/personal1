@@ -7,11 +7,11 @@
  },
  "run_list":[
 	"base-set",
-	"aws-local",
 	"centos-6.5-add-repo",
 	"apache",
 	"mysql",
 	"php-set",
+	"aws-local",
 	"ethna-set"
  ]
 }

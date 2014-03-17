@@ -1,0 +1,110 @@
+#!/bin/bash
+#
+# dynamodb_local        Startup script for the DynamoDB local server
+#
+# chkconfig: - 85 15
+# description: 
+# processname: dynamodb_local
+# config: /etc/sysconfig/dynamodb_local
+# pidfile: /var/run/dynamodb_local/dynamodb_local.pid
+#
+### BEGIN INIT INFO
+# Provides: dynamodb_local
+# Required-Start: $local_fs $remote_fs $network $named
+# Required-Stop: $local_fs $remote_fs $network
+# Should-Start: distcache
+# Short-Description: start and stop DynamoDB local server
+# Description: 
+### END INIT INFO
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+if [ -f /etc/sysconfig/dynamodb_local ]; then
+        . /etc/sysconfig/dynamodb_local
+fi
+
+
+# Path to the apachectl script, server binary, and short-form for messages.
+prog="DynamoDB-local"
+pidfile=${PIDFILE-/var/run/dynamodb_local/dynamodb_local.pid}
+lockfile=${LOCKFILE-/var/lock/subsys/DynamoDB-local}
+RETVAL=0
+STOP_TIMEOUT=${STOP_TIMEOUT-10}
+
+DYNAMODB_HOME=/opt/dynamodb_local
+DYNAMODB_JAVA=java
+OPTIONS="-Xms128 -Xmx256 -Djava.library.path=$DYNAMODB_HOME/DynamoDBLocal_lib -jar $DYNAMODB_HOME/DynamoDBLocal.jar"
+LOG_FILE=/tmp/dynamodb_local.err
+
+# The semantics of these two functions differ from the way apachectl does
+# things -- attempting to start while running is a failure, and shutdown
+# when not running is also a failure.  So we just do it the way init scripts
+# are expected to behave here.
+start() {
+		if [ ! -d /var/run/dynamodb_local ]; then
+			mkdir -p /var/run/dynamodb_local
+		fi
+        echo -n $"Starting $prog: "
+		#daemon --pidfile=${pidfile} $DYNAMODB_JAVA $OPTIONS
+		$DYNAMODB_JAVA $OPTIONS 2> $LOG_FILE &
+		[ "$?" -eq 0 ] && success $"$base startup" || failure $"$base startup"
+        RETVAL=$?
+		echo ""
+		# echo "RETVAL: $?"
+		# echo "   PID: $!"
+        [ $RETVAL = 0 ] && touch ${lockfile}
+        [ $RETVAL = 0 ] && echo $! > ${pidfile}
+        return $RETVAL
+}
+
+# When stopping DYNAMODB_JAVA, a delay (of default 10 second) is required
+# before SIGKILLing the DYNAMODB_JAVA parent; this gives enough time for the
+# DYNAMODB_JAVA parent to SIGKILL any errant children.
+stop() {
+	echo -n $"Stopping $prog: "
+	killproc -p ${pidfile} -d ${STOP_TIMEOUT} $DYNAMODB_JAVA
+	RETVAL=$?
+	echo
+	[ $RETVAL = 0 ] && rm -f ${lockfile} ${pidfile}
+}
+reload() {
+    echo -n $"Reloading $prog: "
+    if ! LANG=$HTTPD_LANG $DYNAMODB_JAVA $OPTIONS -t >&/dev/null; then
+        RETVAL=6
+        echo $"not reloading due to configuration syntax error"
+        failure $"not reloading $DYNAMODB_JAVA due to configuration syntax error"
+    else
+        # Force LSB behaviour from killproc
+        LSB=1 killproc -p ${pidfile} $DYNAMODB_JAVA -HUP
+        RETVAL=$?
+        if [ $RETVAL -eq 7 ]; then
+            failure $"DYNAMODB_JAVA shutdown"
+        fi
+    fi
+    echo
+}
+
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  status)
+        # status -p ${pidfile} $DYNAMODB_JAVA
+        status -p ${pidfile} "$prog"
+	RETVAL=$?
+	;;
+  restart)
+	stop
+	start
+	;;
+  *)
+	echo $"Usage: $prog {start|stop|restart|status}"
+	RETVAL=2
+esac
+
+exit $RETVAL
