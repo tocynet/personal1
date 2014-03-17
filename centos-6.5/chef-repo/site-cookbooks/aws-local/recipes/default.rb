@@ -64,3 +64,11 @@ package "java-#{java_ver}-openjdk" do
 	action :install
 end
 
+cookbook_file "/var/www/aws.test.php" do
+	source 'aws.test.php'
+	owner 'vagrant'
+	group 'vagrant'
+	mode  '0644'
+	not_if { File.exists? "/var/www/aws.test.php" }
+end
+
