@@ -32,11 +32,18 @@ log "opts: #{opts}"
 
 pkgs = []
 pkgs.push("#{php}")
+pkgs.push("#{php}-devel")
 pkgs.push("#{php}-mbstring")
 pkgs.push("#{php}-mysql")
 pkgs.push("#{php}-pdo")
 pkgs.push("#{php}-pecl-apc")
+pkgs.push("#{php}-pecl-memcache")
+pkgs.push("#{php}-pecl-memcached")
 pkgs.push("php-pear")
+pkgs.push("php-pear-DB")
+pkgs.push("php-phpmd-PHP-PMD")
+pkgs.push("php-pear-HTTP-Request")
+pkgs.push("phpMemcachedAdmin")
 
 pkgs.each do |pkg|
 	package "#{pkg}" do
@@ -45,6 +52,14 @@ pkgs.each do |pkg|
 	end
 end
 # notifies :restart, "service[httpd]", :delayed
+
+cookbook_file '/etc/httpd/conf.d/fuel.app.conf' do
+	source 'fuel.app.conf'
+	owner 'vagrant'
+	group 'vagrant'
+	mode  '0644'
+	not_if { File.exists? '/etc/httpd/conf.d/fuel.app.conf' }
+end
 
 service 'httpd' do
 	# action :nothing

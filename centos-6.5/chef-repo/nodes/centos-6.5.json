@@ -6,6 +6,7 @@
  	// "options": ""
  },
  "run_list":[
+ 	"memcached",
 	"base-set",
 	"centos-6.5-add-repo",
 	"apache",

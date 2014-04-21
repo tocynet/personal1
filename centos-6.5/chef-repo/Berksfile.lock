@@ -1,4 +1,19 @@
 {
   "sources": {
+    "memcached": {
+      "locked_version": "1.7.2"
+    },
+    "runit": {
+      "locked_version": "1.5.10"
+    },
+    "build-essential": {
+      "locked_version": "2.0.0"
+    },
+    "yum": {
+      "locked_version": "3.1.4"
+    },
+    "yum-epel": {
+      "locked_version": "0.3.4"
+    }
   }
 }

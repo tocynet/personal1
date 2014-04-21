@@ -3,4 +3,6 @@ site :opscode
 
 # cookbook 'ark'
 # cookbook 'php'
+cookbook 'memcached'
+
 
